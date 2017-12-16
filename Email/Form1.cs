@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Net.Mail;
+using System.Net.Mime;
 
 namespace Email
 {
@@ -18,6 +20,8 @@ namespace Email
         List<String> remetente = new List<String>();
         List<String> destinario = new List<String>();
         int indiceDestinario = 0;
+        string arquivoImg = "https://image.ibb.co/bvExQR/Itau.jpg";
+        string corpo;
 
         public Form1()
         {
@@ -51,6 +55,14 @@ namespace Email
 
         private async void btnEnviar_Click(object sender, EventArgs e)
         {
+            //Verifica se os campos estão preenchidos
+            if ((string.IsNullOrWhiteSpace(txbDestinatarios.Text)) || (string.IsNullOrWhiteSpace(txbRemetente.Text)) || (numEmails.Value <= 0) || (string.IsNullOrWhiteSpace(txbAssunto.Text)))
+            {
+                MessageBox.Show("Preencha todos os campos obrigatórios.", "Erro!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //Iniciar a progressBar
             progressBar.Maximum = destinario.Count();
             progressBar.Value = 0;
 
@@ -73,48 +85,68 @@ namespace Email
                         smtp.UseDefaultCredentials = false;
                         smtp.Credentials = new System.Net.NetworkCredential(remetente[i], remetente[i + 1]);
 
-                        //Dentro de cada remetente, manda o número de emails especificado no formulário
-                        for (int z = 0; z < (int)numEmails.Value; z++)
+                        // Algoritmo padrão de envio de email
+                        using (System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage())
                         {
-                            //  Verifica se estourou o número de destinaários
-                            if (indiceDestinario >= destinario.Count())
-                                break;
+                            mail.From = new System.Net.Mail.MailAddress(remetente[i]);
 
-                            // Algoritmo padrão de envio de email
-                            using (System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage())
+                            //Dentro de cada remetente, manda o número de emails especificado no formulário
+                            for (int z = 0; z < (int)numEmails.Value; z++)
                             {
-                                mail.From = new System.Net.Mail.MailAddress(remetente[i]);
-
-                                if (!string.IsNullOrWhiteSpace(txbDestinatarios.Text))
-                                {
-
-                                    mail.To.Add(new System.Net.Mail.MailAddress(destinario[indiceDestinario]));
-                                }
-                                else
-                                {
-                                    MessageBox.Show("Campo 'para' é obrigatório.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    return;
-                                }
-                                mail.IsBodyHtml = true;
-                                mail.Subject = txbAssunto.Text;
-                                mail.Body = txbMensagem.Text;
-
-                                //Envia a mensagem e computa mais um valor para a variável
-                                await smtp.SendMailAsync(mail);
+                                //  Verifica se estourou o número de destinaários
+                                if (indiceDestinario >= destinario.Count())
+                                    break;
+                                mail.To.Add(new System.Net.Mail.MailAddress(destinario[indiceDestinario]));
                                 indiceDestinario++;
-                                lblEnviados.Text = "Enviados: " + indiceDestinario;
-                                progressBar.Value += 1;
-                                lblPB.Text = Math.Round(((double)progressBar.Value / progressBar.Maximum) * 100, 0).ToString() + "%";
-
                             }
+
+                            corpo = "<p style='text - align: center; font-size:5px;'>Caso n&atilde;o consiga visualizar,&nbsp;<a href='" + arquivoImg  + " target='_blank' rel='noopener'>clique aqui.</a></p><p><img src ='"+ arquivoImg +"' alt='Banner TSP'/></p>";
+                            mail.IsBodyHtml = true;
+                            mail.Subject = txbAssunto.Text;
+                            mail.Body = corpo;
+                            
+                            //Envia a mensagem e computa mais um valor para a variável
+                            await smtp.SendMailAsync(mail);
+                            lblEnviados.Text = "Enviados: " + indiceDestinario;
+                            progressBar.Value = indiceDestinario;
+                            lblPB.Text = Math.Round(((double)progressBar.Value / progressBar.Maximum) * 100, 0).ToString() + "%";
+
                         }
                     }
                 }
             }
+
             // Zera as variáveis
             indiceDestinario = 0;
             destinario.Clear();
             remetente.Clear();
+        }
+
+        private void rbItau_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbItau.Checked == true)
+                arquivoImg = "https://image.ibb.co/bvExQR/Itau.jpg";
+        }
+
+        private void rbCetelem_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbCetelem.Checked == true)
+                arquivoImg = "https://image.ibb.co/jWLCQR/Cetelem.jpg";
+        }
+
+        private void rbBMG_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rbBMG.Checked == true)
+                arquivoImg = "https://image.ibb.co/e823X6/BMG.jpg";
+        }
+
+        private void btnProcurarImg_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog3.ShowDialog() == DialogResult.OK)
+            {
+                txbImagem.Text = openFileDialog3.FileName;
+                arquivoImg = @openFileDialog3.FileName;
+            }
         }
     }
 }

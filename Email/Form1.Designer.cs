@@ -46,6 +46,13 @@
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.lblPB = new System.Windows.Forms.Label();
             this.lblEnviados = new System.Windows.Forms.Label();
+            this.lblImagem = new System.Windows.Forms.Label();
+            this.txbImagem = new System.Windows.Forms.TextBox();
+            this.btnProcurarImg = new System.Windows.Forms.Button();
+            this.openFileDialog3 = new System.Windows.Forms.OpenFileDialog();
+            this.rbItau = new System.Windows.Forms.RadioButton();
+            this.rbCetelem = new System.Windows.Forms.RadioButton();
+            this.rbBMG = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.numEmails)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,7 +95,7 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.Filter = "Arquivo de Texto |*.txt";
-            this.openFileDialog1.Title = "Selecione um arquvio de texto.";
+            this.openFileDialog1.Title = "Selecione um arquivo de texto.";
             // 
             // txbDestinatarios
             // 
@@ -126,7 +133,7 @@
             // 
             this.txbMensagem.Location = new System.Drawing.Point(108, 216);
             this.txbMensagem.Name = "txbMensagem";
-            this.txbMensagem.Size = new System.Drawing.Size(375, 190);
+            this.txbMensagem.Size = new System.Drawing.Size(366, 117);
             this.txbMensagem.TabIndex = 11;
             this.txbMensagem.Text = "";
             // 
@@ -144,7 +151,7 @@
             // 
             this.openFileDialog2.FileName = "openFileDialog1";
             this.openFileDialog2.Filter = "Arquivo de Texto |*.txt";
-            this.openFileDialog2.Title = "Selecione um arquvio de texto.";
+            this.openFileDialog2.Title = "Selecione um arquivo de texto.";
             // 
             // numEmails
             // 
@@ -174,7 +181,7 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(12, 417);
+            this.progressBar.Location = new System.Drawing.Point(12, 440);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(350, 21);
             this.progressBar.TabIndex = 16;
@@ -183,7 +190,7 @@
             // 
             this.lblPB.AutoSize = true;
             this.lblPB.BackColor = System.Drawing.Color.Transparent;
-            this.lblPB.Location = new System.Drawing.Point(379, 423);
+            this.lblPB.Location = new System.Drawing.Point(379, 446);
             this.lblPB.Name = "lblPB";
             this.lblPB.Size = new System.Drawing.Size(21, 13);
             this.lblPB.TabIndex = 17;
@@ -192,17 +199,91 @@
             // lblEnviados
             // 
             this.lblEnviados.AutoSize = true;
-            this.lblEnviados.Location = new System.Drawing.Point(411, 423);
+            this.lblEnviados.Location = new System.Drawing.Point(411, 446);
             this.lblEnviados.Name = "lblEnviados";
             this.lblEnviados.Size = new System.Drawing.Size(63, 13);
             this.lblEnviados.TabIndex = 18;
             this.lblEnviados.Text = "Enviados: 0";
             // 
+            // lblImagem
+            // 
+            this.lblImagem.AutoSize = true;
+            this.lblImagem.Location = new System.Drawing.Point(12, 353);
+            this.lblImagem.Name = "lblImagem";
+            this.lblImagem.Size = new System.Drawing.Size(47, 13);
+            this.lblImagem.TabIndex = 19;
+            this.lblImagem.Text = "Imagem:";
+            // 
+            // txbImagem
+            // 
+            this.txbImagem.Enabled = false;
+            this.txbImagem.Location = new System.Drawing.Point(190, 350);
+            this.txbImagem.Name = "txbImagem";
+            this.txbImagem.Size = new System.Drawing.Size(293, 20);
+            this.txbImagem.TabIndex = 20;
+            // 
+            // btnProcurarImg
+            // 
+            this.btnProcurarImg.Enabled = false;
+            this.btnProcurarImg.Location = new System.Drawing.Point(108, 348);
+            this.btnProcurarImg.Name = "btnProcurarImg";
+            this.btnProcurarImg.Size = new System.Drawing.Size(75, 23);
+            this.btnProcurarImg.TabIndex = 21;
+            this.btnProcurarImg.Text = "Procurar";
+            this.btnProcurarImg.UseVisualStyleBackColor = true;
+            this.btnProcurarImg.Click += new System.EventHandler(this.btnProcurarImg_Click);
+            // 
+            // openFileDialog3
+            // 
+            this.openFileDialog3.FileName = "openFileDialog1";
+            this.openFileDialog3.Title = "Selecione uma imagem";
+            // 
+            // rbItau
+            // 
+            this.rbItau.AutoSize = true;
+            this.rbItau.Checked = true;
+            this.rbItau.Location = new System.Drawing.Point(108, 404);
+            this.rbItau.Name = "rbItau";
+            this.rbItau.Size = new System.Drawing.Size(43, 17);
+            this.rbItau.TabIndex = 22;
+            this.rbItau.TabStop = true;
+            this.rbItau.Text = "Itaú";
+            this.rbItau.UseVisualStyleBackColor = true;
+            this.rbItau.CheckedChanged += new System.EventHandler(this.rbItau_CheckedChanged);
+            // 
+            // rbCetelem
+            // 
+            this.rbCetelem.AutoSize = true;
+            this.rbCetelem.Location = new System.Drawing.Point(181, 404);
+            this.rbCetelem.Name = "rbCetelem";
+            this.rbCetelem.Size = new System.Drawing.Size(63, 17);
+            this.rbCetelem.TabIndex = 23;
+            this.rbCetelem.Text = "Cetelem";
+            this.rbCetelem.UseVisualStyleBackColor = true;
+            this.rbCetelem.CheckedChanged += new System.EventHandler(this.rbCetelem_CheckedChanged);
+            // 
+            // rbBMG
+            // 
+            this.rbBMG.AutoSize = true;
+            this.rbBMG.Location = new System.Drawing.Point(271, 404);
+            this.rbBMG.Name = "rbBMG";
+            this.rbBMG.Size = new System.Drawing.Size(49, 17);
+            this.rbBMG.TabIndex = 24;
+            this.rbBMG.Text = "BMG";
+            this.rbBMG.UseVisualStyleBackColor = true;
+            this.rbBMG.CheckedChanged += new System.EventHandler(this.rbBMG_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(516, 445);
+            this.ClientSize = new System.Drawing.Size(519, 468);
+            this.Controls.Add(this.rbBMG);
+            this.Controls.Add(this.rbCetelem);
+            this.Controls.Add(this.rbItau);
+            this.Controls.Add(this.btnProcurarImg);
+            this.Controls.Add(this.txbImagem);
+            this.Controls.Add(this.lblImagem);
             this.Controls.Add(this.lblEnviados);
             this.Controls.Add(this.lblPB);
             this.Controls.Add(this.progressBar);
@@ -247,6 +328,13 @@
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Label lblPB;
         private System.Windows.Forms.Label lblEnviados;
+        private System.Windows.Forms.Label lblImagem;
+        private System.Windows.Forms.TextBox txbImagem;
+        private System.Windows.Forms.Button btnProcurarImg;
+        private System.Windows.Forms.OpenFileDialog openFileDialog3;
+        private System.Windows.Forms.RadioButton rbItau;
+        private System.Windows.Forms.RadioButton rbCetelem;
+        private System.Windows.Forms.RadioButton rbBMG;
     }
 }
 
