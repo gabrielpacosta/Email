@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Net.Mail;
 using System.Net.Mime;
+using System.Xml;
 
 namespace Email
 {
@@ -85,32 +86,32 @@ namespace Email
                         smtp.UseDefaultCredentials = false;
                         smtp.Credentials = new System.Net.NetworkCredential(remetente[i], remetente[i + 1]);
 
-                        // Algoritmo padrão de envio de email
-                        using (System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage())
+                        //Dentro de cada remetente, manda o número de emails especificado no formulário
+                        for (int z = 0; z < (int)numEmails.Value; z++)
                         {
-                            mail.From = new System.Net.Mail.MailAddress(remetente[i]);
+                            //  Verifica se estourou o número de destinaários
+                            if (indiceDestinario >= destinario.Count())
+                                break;
 
-                            //Dentro de cada remetente, manda o número de emails especificado no formulário
-                            for (int z = 0; z < (int)numEmails.Value; z++)
+                            // Algoritmo padrão de envio de email
+                            using (System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage())
                             {
-                                //  Verifica se estourou o número de destinaários
-                                if (indiceDestinario >= destinario.Count())
-                                    break;
+                                mail.From = new System.Net.Mail.MailAddress(remetente[i]);
                                 mail.To.Add(new System.Net.Mail.MailAddress(destinario[indiceDestinario]));
+
+                                corpo = "<p style='text - align: center; font-size:5px;'>Caso n&atilde;o consiga visualizar,&nbsp;<a href='" + arquivoImg + " target='_blank' rel='noopener'>clique aqui.</a></p><p><img src ='" + arquivoImg + "' alt='Banner TSP'/></p>";
+                                mail.IsBodyHtml = true;
+                                mail.Subject = txbAssunto.Text;
+                                mail.Body = corpo;
+
+                                //Envia o email e atualiza as variaveis
+                                await smtp.SendMailAsync(mail);
+
                                 indiceDestinario++;
+                                lblEnviados.Text = "Enviados: " + indiceDestinario;
+                                progressBar.Value = indiceDestinario;
+                                lblPB.Text = Math.Round(((double)progressBar.Value / progressBar.Maximum) * 100, 0).ToString() + "%";
                             }
-
-                            corpo = "<p style='text - align: center; font-size:5px;'>Caso n&atilde;o consiga visualizar,&nbsp;<a href='" + arquivoImg  + " target='_blank' rel='noopener'>clique aqui.</a></p><p><img src ='"+ arquivoImg +"' alt='Banner TSP'/></p>";
-                            mail.IsBodyHtml = true;
-                            mail.Subject = txbAssunto.Text;
-                            mail.Body = corpo;
-                            
-                            //Envia a mensagem e computa mais um valor para a variável
-                            await smtp.SendMailAsync(mail);
-                            lblEnviados.Text = "Enviados: " + indiceDestinario;
-                            progressBar.Value = indiceDestinario;
-                            lblPB.Text = Math.Round(((double)progressBar.Value / progressBar.Maximum) * 100, 0).ToString() + "%";
-
                         }
                     }
                 }
@@ -118,8 +119,47 @@ namespace Email
 
             // Zera as variáveis
             indiceDestinario = 0;
-            destinario.Clear();
-            remetente.Clear();
+
+            //Chama o método para verificar retornor de emails não existentes
+            CheckInvalidEmailsReturns();
+        }
+
+        private void CheckInvalidEmailsReturns()
+        {
+            try
+            {
+                System.Net.WebClient objClient = new System.Net.WebClient();
+                string response;
+                string title;
+                string summary;
+
+                //Creating a new xml document
+                XmlDocument doc = new XmlDocument();
+
+                //Logging in Gmail server to get data
+                objClient.Credentials = new System.Net.NetworkCredential("Campanha_itauBMG_TSP@tsprecuperadora.com.br", "Tsp@1234#$321@@");
+                //reading data and converting to string
+                response = Encoding.UTF8.GetString(
+                           objClient.DownloadData(@"https://mail.google.com/mail/feed/atom"));
+
+                response = response.Replace(
+                     @"<feed version=""0.3"" xmlns=""http://purl.org/atom/ns#"">", @"<feed>");
+
+                //loading into an XML so we can get information easily
+                doc.LoadXml(response);
+
+                //Reading the title and the summary for every email
+                foreach (XmlNode node in doc.SelectNodes(@"/feed/entry"))
+                {
+                    title = node.SelectSingleNode("title").InnerText;
+                    summary = node.SelectSingleNode("summary").InnerText;
+                }
+                doc.Save("data.xml");
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show("Check your network connection");
+            }
         }
 
         private void rbItau_CheckedChanged(object sender, EventArgs e)

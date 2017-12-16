@@ -53,6 +53,7 @@
             this.rbItau = new System.Windows.Forms.RadioButton();
             this.rbCetelem = new System.Windows.Forms.RadioButton();
             this.rbBMG = new System.Windows.Forms.RadioButton();
+            this.lblInvalidos = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numEmails)).BeginInit();
             this.SuspendLayout();
             // 
@@ -181,7 +182,7 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(12, 440);
+            this.progressBar.Location = new System.Drawing.Point(12, 457);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(350, 21);
             this.progressBar.TabIndex = 16;
@@ -190,7 +191,7 @@
             // 
             this.lblPB.AutoSize = true;
             this.lblPB.BackColor = System.Drawing.Color.Transparent;
-            this.lblPB.Location = new System.Drawing.Point(379, 446);
+            this.lblPB.Location = new System.Drawing.Point(379, 463);
             this.lblPB.Name = "lblPB";
             this.lblPB.Size = new System.Drawing.Size(21, 13);
             this.lblPB.TabIndex = 17;
@@ -199,7 +200,7 @@
             // lblEnviados
             // 
             this.lblEnviados.AutoSize = true;
-            this.lblEnviados.Location = new System.Drawing.Point(411, 446);
+            this.lblEnviados.Location = new System.Drawing.Point(411, 463);
             this.lblEnviados.Name = "lblEnviados";
             this.lblEnviados.Size = new System.Drawing.Size(63, 13);
             this.lblEnviados.TabIndex = 18;
@@ -242,7 +243,7 @@
             // 
             this.rbItau.AutoSize = true;
             this.rbItau.Checked = true;
-            this.rbItau.Location = new System.Drawing.Point(108, 404);
+            this.rbItau.Location = new System.Drawing.Point(117, 382);
             this.rbItau.Name = "rbItau";
             this.rbItau.Size = new System.Drawing.Size(43, 17);
             this.rbItau.TabIndex = 22;
@@ -254,7 +255,7 @@
             // rbCetelem
             // 
             this.rbCetelem.AutoSize = true;
-            this.rbCetelem.Location = new System.Drawing.Point(181, 404);
+            this.rbCetelem.Location = new System.Drawing.Point(190, 382);
             this.rbCetelem.Name = "rbCetelem";
             this.rbCetelem.Size = new System.Drawing.Size(63, 17);
             this.rbCetelem.TabIndex = 23;
@@ -265,7 +266,7 @@
             // rbBMG
             // 
             this.rbBMG.AutoSize = true;
-            this.rbBMG.Location = new System.Drawing.Point(271, 404);
+            this.rbBMG.Location = new System.Drawing.Point(280, 382);
             this.rbBMG.Name = "rbBMG";
             this.rbBMG.Size = new System.Drawing.Size(49, 17);
             this.rbBMG.TabIndex = 24;
@@ -273,11 +274,21 @@
             this.rbBMG.UseVisualStyleBackColor = true;
             this.rbBMG.CheckedChanged += new System.EventHandler(this.rbBMG_CheckedChanged);
             // 
+            // lblInvalidos
+            // 
+            this.lblInvalidos.AutoSize = true;
+            this.lblInvalidos.Location = new System.Drawing.Point(12, 424);
+            this.lblInvalidos.Name = "lblInvalidos";
+            this.lblInvalidos.Size = new System.Drawing.Size(52, 13);
+            this.lblInvalidos.TabIndex = 25;
+            this.lblInvalidos.Text = "Inválidos:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(519, 468);
+            this.ClientSize = new System.Drawing.Size(519, 483);
+            this.Controls.Add(this.lblInvalidos);
             this.Controls.Add(this.rbBMG);
             this.Controls.Add(this.rbCetelem);
             this.Controls.Add(this.rbItau);
@@ -335,6 +346,7 @@
         private System.Windows.Forms.RadioButton rbItau;
         private System.Windows.Forms.RadioButton rbCetelem;
         private System.Windows.Forms.RadioButton rbBMG;
+        private System.Windows.Forms.Label lblInvalidos;
     }
 }
 
