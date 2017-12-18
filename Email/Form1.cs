@@ -20,9 +20,8 @@ namespace Email
 
         List<String> remetente = new List<String>();
         List<String> destinario = new List<String>();
-        int indiceDestinario = 0;
-        string arquivoImg = "https://image.ibb.co/bvExQR/Itau.jpg";
-        string corpo;
+        int nEmailTotal, nEmailEnviado = 0;
+        string arquivoImg = "https://image.ibb.co/bvExQR/Itau.jpg",arquivoLog, corpo;
 
         public Form1()
         {
@@ -57,24 +56,28 @@ namespace Email
         private async void btnEnviar_Click(object sender, EventArgs e)
         {
             //Verifica se os campos estão preenchidos
-            if ((string.IsNullOrWhiteSpace(txbDestinatarios.Text)) || (string.IsNullOrWhiteSpace(txbRemetente.Text)) || (numEmails.Value <= 0) || (string.IsNullOrWhiteSpace(txbAssunto.Text)))
+            if ((string.IsNullOrWhiteSpace(txbDestinatarios.Text)) || (string.IsNullOrWhiteSpace(txbRemetente.Text)) || (string.IsNullOrWhiteSpace(txbAssunto.Text)) || (string.IsNullOrWhiteSpace(txbDirLog.Text)) || (numPorRemetente.Value <= 0) || (numDe.Value <= 0) || (numAte.Value <= 0) || (numAte.Value < numDe.Value))
             {
                 MessageBox.Show("Preencha todos os campos obrigatórios.", "Erro!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            //Iniciar a progressBar
-            progressBar.Maximum = destinario.Count();
-            progressBar.Value = 0;
+            //Define o número de email a ser enviado
+            nEmailTotal = (int)(numAte.Value - numDe.Value + 1);
 
-            // Executa o primeiro laço até o número de destinátários se esgotar
-            while (indiceDestinario < destinario.Count())
+            //Iniciar a progressBar
+            progressBar.Maximum = nEmailTotal;
+            progressBar.Value = 0;
+            lblPB.Text = "0%";
+
+            // Executa o primeiro laço até o número emails especificados serem enviados
+            while (nEmailEnviado < nEmailTotal)
             {
                 //Executa para cada remetente
                 for (int i = 0; i < remetente.Count(); i += 2)
                 {
-                    //  Verifica se estourou o número de destinaários
-                    if (indiceDestinario >= destinario.Count())
+                    //  Verifica se estourou o número de emails a serem enviados
+                    if (nEmailTotal <= nEmailEnviado)
                         break;
 
                     // Inicia a conexão smtp para o remetente atual do laço
@@ -87,29 +90,33 @@ namespace Email
                         smtp.Credentials = new System.Net.NetworkCredential(remetente[i], remetente[i + 1]);
 
                         //Dentro de cada remetente, manda o número de emails especificado no formulário
-                        for (int z = 0; z < (int)numEmails.Value; z++)
+                        for (int z = 0; z < (int)numPorRemetente.Value; z++)
                         {
-                            //  Verifica se estourou o número de destinaários
-                            if (indiceDestinario >= destinario.Count())
+                            //  Verifica se estourou o número de emails a serem enviados
+                            if (nEmailTotal <= nEmailEnviado)
                                 break;
 
                             // Algoritmo padrão de envio de email
                             using (System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage())
                             {
                                 mail.From = new System.Net.Mail.MailAddress(remetente[i]);
-                                mail.To.Add(new System.Net.Mail.MailAddress(destinario[indiceDestinario]));
+                                mail.To.Add(new System.Net.Mail.MailAddress(destinario[(int)numDe.Value+nEmailEnviado-1]));
 
-                                corpo = "<p style='text - align: center; font-size:5px;'>Caso n&atilde;o consiga visualizar,&nbsp;<a href='" + arquivoImg + " target='_blank' rel='noopener'>clique aqui.</a></p><p><img src ='" + arquivoImg + "' alt='Banner TSP'/></p>";
+                                corpo = "<p style='text - align: center; font-size:5px;'>Caso n&atilde;o consiga visualizar,&nbsp;<a href='" + arquivoImg + " target='_blank' rel='noopener'>clique aqui.</a></p> <a href='http://www.tsprecuperadora.com.br/' target='_blank'><p><img src='" + arquivoImg + "' alt='Banner TSP'/></p></a>";
                                 mail.IsBodyHtml = true;
                                 mail.Subject = txbAssunto.Text;
                                 mail.Body = corpo;
 
-                                //Envia o email e atualiza as variaveis
+                                //Envia o email, atualiza as variaveis e o log
                                 await smtp.SendMailAsync(mail);
 
-                                indiceDestinario++;
-                                lblEnviados.Text = "Enviados: " + indiceDestinario;
-                                progressBar.Value = indiceDestinario;
+                                txbLog.Text += "Linha: " + (int)(numDe.Value + nEmailEnviado) + " - Email: " + destinario[(int)numDe.Value + nEmailEnviado - 1] + " enviado." + Environment.NewLine;
+
+                                File.AppendAllText(arquivoLog, "Linha: " + (int)(numDe.Value + nEmailEnviado) + " - Email: " + destinario[(int)numDe.Value + nEmailEnviado - 1] + " enviado." + Environment.NewLine);
+
+                                nEmailEnviado++;
+                                lblEnviados.Text = "Enviados: " + nEmailEnviado + "/" + nEmailTotal;
+                                progressBar.Value = nEmailEnviado;
                                 lblPB.Text = Math.Round(((double)progressBar.Value / progressBar.Maximum) * 100, 0).ToString() + "%";
                             }
                         }
@@ -117,49 +124,8 @@ namespace Email
                 }
             }
 
-            // Zera as variáveis
-            indiceDestinario = 0;
-
-            //Chama o método para verificar retornor de emails não existentes
-            CheckInvalidEmailsReturns();
-        }
-
-        private void CheckInvalidEmailsReturns()
-        {
-            try
-            {
-                System.Net.WebClient objClient = new System.Net.WebClient();
-                string response;
-                string title;
-                string summary;
-
-                //Creating a new xml document
-                XmlDocument doc = new XmlDocument();
-
-                //Logging in Gmail server to get data
-                objClient.Credentials = new System.Net.NetworkCredential("Campanha_itauBMG_TSP@tsprecuperadora.com.br", "Tsp@1234#$321@@");
-                //reading data and converting to string
-                response = Encoding.UTF8.GetString(
-                           objClient.DownloadData(@"https://mail.google.com/mail/feed/atom"));
-
-                response = response.Replace(
-                     @"<feed version=""0.3"" xmlns=""http://purl.org/atom/ns#"">", @"<feed>");
-
-                //loading into an XML so we can get information easily
-                doc.LoadXml(response);
-
-                //Reading the title and the summary for every email
-                foreach (XmlNode node in doc.SelectNodes(@"/feed/entry"))
-                {
-                    title = node.SelectSingleNode("title").InnerText;
-                    summary = node.SelectSingleNode("summary").InnerText;
-                }
-                doc.Save("data.xml");
-            }
-            catch (Exception ex)
-            {
-                //MessageBox.Show("Check your network connection");
-            }
+            // Zera as variáveis e salva o arquivo de log
+            nEmailEnviado = 0;
         }
 
         private void rbItau_CheckedChanged(object sender, EventArgs e)
@@ -188,5 +154,15 @@ namespace Email
                 arquivoImg = @openFileDialog3.FileName;
             }
         }
+
+        private void btnProcurarLog_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                txbDirLog.Text = folderBrowserDialog.SelectedPath;
+                arquivoLog = @folderBrowserDialog.SelectedPath + "\\" + DateTime.Now.ToString("yyyy-MM-dd HH.mm.ss") + " - LogEmailTSP.txt";
+            }
+        }
+
     }
 }
