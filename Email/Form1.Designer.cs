@@ -106,7 +106,7 @@
             // 
             // openFileDialog1
             // 
-            this.openFileDialog1.FileName = "Arquivo remetentes";
+            this.openFileDialog1.FileName = "Arquivo destinatarios";
             this.openFileDialog1.Filter = "Arquivo de Texto |*.txt";
             this.openFileDialog1.Title = "Selecione um arquivo de texto.";
             // 
@@ -163,13 +163,18 @@
             // 
             // openFileDialog2
             // 
-            this.openFileDialog2.FileName = "Arquivo destinatarios";
+            this.openFileDialog2.FileName = "Arquivo remetentes";
             this.openFileDialog2.Filter = "Arquivo de Texto |*.txt";
             this.openFileDialog2.Title = "Selecione um arquivo de texto.";
             // 
             // numPorRemetente
             // 
             this.numPorRemetente.Location = new System.Drawing.Point(400, 32);
+            this.numPorRemetente.Maximum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
             this.numPorRemetente.Name = "numPorRemetente";
             this.numPorRemetente.Size = new System.Drawing.Size(74, 20);
             this.numPorRemetente.TabIndex = 13;
@@ -273,6 +278,11 @@
             // numDe
             // 
             this.numDe.Location = new System.Drawing.Point(400, 78);
+            this.numDe.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
             this.numDe.Name = "numDe";
             this.numDe.Size = new System.Drawing.Size(74, 20);
             this.numDe.TabIndex = 15;
@@ -289,6 +299,11 @@
             // numAte
             // 
             this.numAte.Location = new System.Drawing.Point(400, 128);
+            this.numAte.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
             this.numAte.Name = "numAte";
             this.numAte.Size = new System.Drawing.Size(74, 20);
             this.numAte.TabIndex = 17;
@@ -334,21 +349,21 @@
             // progressBar
             // 
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(300, 16);
+            this.progressBar.Size = new System.Drawing.Size(280, 16);
             // 
             // lblPB
             // 
-            this.lblPB.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+            this.lblPB.Margin = new System.Windows.Forms.Padding(25, 3, 0, 2);
             this.lblPB.Name = "lblPB";
             this.lblPB.Size = new System.Drawing.Size(23, 17);
             this.lblPB.Text = "0%";
             // 
             // lblEnviados
             // 
-            this.lblEnviados.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+            this.lblEnviados.Margin = new System.Windows.Forms.Padding(25, 3, 0, 2);
             this.lblEnviados.Name = "lblEnviados";
-            this.lblEnviados.Size = new System.Drawing.Size(66, 17);
-            this.lblEnviados.Text = "Enviados: 0";
+            this.lblEnviados.Size = new System.Drawing.Size(77, 17);
+            this.lblEnviados.Text = "Enviados: 0/0";
             // 
             // folderBrowserDialog
             // 

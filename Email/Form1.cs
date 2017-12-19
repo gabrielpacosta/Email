@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-using System.Net.Mail;
-using System.Net.Mime;
-using System.Xml;
 
 namespace Email
 {
@@ -100,25 +92,27 @@ namespace Email
                             using (System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage())
                             {
                                 mail.From = new System.Net.Mail.MailAddress(remetente[i]);
-                                mail.To.Add(new System.Net.Mail.MailAddress(destinario[(int)numDe.Value+nEmailEnviado-1]));
+                                mail.To.Add(new System.Net.Mail.MailAddress(destinario[(int)numDe.Value + nEmailEnviado - 1]));
 
-                                corpo = "<p style='text - align: center; font-size:5px;'>Caso n&atilde;o consiga visualizar,&nbsp;<a href='" + arquivoImg + " target='_blank' rel='noopener'>clique aqui.</a></p> <a href='http://www.tsprecuperadora.com.br/' target='_blank'><p><img src='" + arquivoImg + "' alt='Banner TSP'/></p></a>";
                                 mail.IsBodyHtml = true;
                                 mail.Subject = txbAssunto.Text;
-                                mail.Body = corpo;
+                                mail.Body = "<p style='text - align: center; font-size:5px;'>Caso n&atilde;o consiga visualizar,&nbsp;<a href='" + arquivoImg + " target='_blank' rel='noopener'>clique aqui.</a></p> <a href='http://www.tsprecuperadora.com.br/' target='_blank'><p><img src='" + arquivoImg + "' alt='Banner TSP'/></p></a>";
+
+
 
                                 //Envia o email, atualiza as variaveis e o log
                                 await smtp.SendMailAsync(mail);
-
-                                txbLog.Text += "Linha: " + (int)(numDe.Value + nEmailEnviado) + " - Email: " + destinario[(int)numDe.Value + nEmailEnviado - 1] + " enviado." + Environment.NewLine;
-
-                                File.AppendAllText(arquivoLog, "Linha: " + (int)(numDe.Value + nEmailEnviado) + " - Email: " + destinario[(int)numDe.Value + nEmailEnviado - 1] + " enviado." + Environment.NewLine);
-
-                                nEmailEnviado++;
-                                lblEnviados.Text = "Enviados: " + nEmailEnviado + "/" + nEmailTotal;
-                                progressBar.Value = nEmailEnviado;
-                                lblPB.Text = Math.Round(((double)progressBar.Value / progressBar.Maximum) * 100, 0).ToString() + "%";
                             }
+
+                            txbLog.Text += "Linha: " + (int)(numDe.Value + nEmailEnviado) + " - Email: " + destinario[(int)numDe.Value + nEmailEnviado - 1] + " enviado." + Environment.NewLine;
+
+                            File.AppendAllText(arquivoLog, "Linha: " + (int)(numDe.Value + nEmailEnviado) + " - Email: " + destinario[(int)numDe.Value + nEmailEnviado - 1] + " enviado." + Environment.NewLine);
+
+                            nEmailEnviado++;
+                            lblEnviados.Text = "Enviados: " + nEmailEnviado + "/" + nEmailTotal;
+                            progressBar.Value = nEmailEnviado;
+                            lblPB.Text = Math.Round(((double)progressBar.Value / progressBar.Maximum) * 100, 0).ToString() + "%";
+                           
                         }
                     }
                 }
