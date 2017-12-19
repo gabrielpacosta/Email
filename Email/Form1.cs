@@ -54,6 +54,9 @@ namespace Email
                 return;
             }
 
+            //Bloqueia os controles
+            ControlesBloqueados(true);
+
             //Define o número de email a ser enviado
             nEmailTotal = (int)(numAte.Value - numDe.Value + 1);
 
@@ -98,8 +101,6 @@ namespace Email
                                 mail.Subject = txbAssunto.Text;
                                 mail.Body = "<p style='text - align: center; font-size:5px;'>Caso n&atilde;o consiga visualizar,&nbsp;<a href='" + arquivoImg + " target='_blank' rel='noopener'>clique aqui.</a></p> <a href='http://www.tsprecuperadora.com.br/' target='_blank'><p><img src='" + arquivoImg + "' alt='Banner TSP'/></p></a>";
 
-
-
                                 //Envia o email, atualiza as variaveis e o log
                                 await smtp.SendMailAsync(mail);
                             }
@@ -118,8 +119,27 @@ namespace Email
                 }
             }
 
-            // Zera as variáveis e salva o arquivo de log
+            // Zera as variáveis, reativa os controles e manda messagebox
             nEmailEnviado = 0;
+
+            MessageBox.Show("Todos os emails foram enviados com sucesso.", "Concluído!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            ControlesBloqueados(false);
+        }
+
+        private void ControlesBloqueados(bool block)
+        {
+            btnEnviar.Enabled = !block;
+            btnProcurar.Enabled = !block;
+            btnProcurarLog.Enabled = !block;
+            btnProcurarRemetente.Enabled = !block;
+            txbAssunto.Enabled = !block;
+            numAte.Enabled = !block;
+            numDe.Enabled = !block;
+            numPorRemetente.Enabled = !block;
+            rbBMG.Enabled = !block;
+            rbCetelem.Enabled = !block;
+            rbItau.Enabled = !block;
         }
 
         private void rbItau_CheckedChanged(object sender, EventArgs e)
