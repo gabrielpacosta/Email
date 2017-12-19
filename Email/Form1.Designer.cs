@@ -401,6 +401,7 @@
             this.Controls.Add(this.lblDestinatario);
             this.Controls.Add(this.txbRemetente);
             this.Controls.Add(this.lblRemetente);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Form1";
             this.Text = "Email TSP";
             ((System.ComponentModel.ISupportInitialize)(this.numPorRemetente)).EndInit();
